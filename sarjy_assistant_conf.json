@@ -1,0 +1,70 @@
+{
+  "id": "f7c3440d-54fc-48b5-b980-94d3504a9429",
+  "orgId": "dc4f6480-4fe7-474d-96c9-74badd1b15a4",
+  "name": "Sarjy",
+  "voice": {
+    "model": "eleven_multilingual_v2",
+    "voiceId": "a1KZUXKFVFDOb33I1uqr",
+    "provider": "11labs",
+    "stability": 0.5,
+    "fallbackPlan": {
+      "voices": [
+        {
+          "model": "sonic-3",
+          "voiceId": "57dcab65-68ac-45a6-8480-6c4c52ec1cd1",
+          "provider": "cartesia",
+          "generationConfig": {},
+          "experimentalControls": {}
+        }
+      ]
+    },
+    "similarityBoost": 0.75,
+    "optimizeStreamingLatency": 1
+  },
+  "createdAt": "2026-05-02T06: 35: 58.137Z",
+  "updatedAt": "2026-05-02T09: 38: 09.838Z",
+  "model": {
+    "model": "llama-3.1-8b-instant",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are Sarjy, a helpful, ultra-fast personal assistant.\nYou are bilingual. Always respond in the exact language the user just spoke to you (Arabic or English).\nKeep your answers extremely concise and conversational. Do not use markdown formatting like asterisks or bullet points, because your text will be spoken out loud.\nGuardrail: If a user asks about illegal or harmful topics, politely decline to answer and ask if they need help planning their day instead."
+      }
+    ],
+    "provider": "groq"
+  },
+  "firstMessage": "Hello, this is Sarjy! How can I help you today?",
+  "voicemailMessage": "Please call back when you're available.",
+  "endCallMessage": "Goodbye.",
+  "transcriber": {
+    "model": "solaria-1",
+    "prosody": false,
+    "language": "en",
+    "provider": "gladia",
+    "languages": [
+      "en",
+      "ar"
+    ],
+    "fallbackPlan": {
+      "transcribers": [
+        {
+          "model": "flux-general-en",
+          "language": "en",
+          "provider": "deepgram"
+        }
+      ]
+    },
+    "audioEnhancer": false,
+    "confidenceThreshold": 0.4
+  },
+  "analysisPlan": {
+    "summaryPlan": {
+      "enabled": false
+    },
+    "successEvaluationPlan": {
+      "enabled": false
+    }
+  },
+  "backgroundDenoisingEnabled": true,
+  "isServerUrlSecretSet": false
+}
