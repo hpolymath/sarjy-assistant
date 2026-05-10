@@ -1,0 +1,64 @@
+{
+  "id": "cb80b2ff-15e3-474c-bd47-7c2d52804da4",
+  "createdAt": "2026-05-08T22:53:56.286Z",
+  "updatedAt": "2026-05-09T07:11:20.263Z",
+  "type": "function",
+  "function": {
+    "name": "get_weather",
+    "description": "Fetches the current weather for a specific city.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "description": "The name of the target city in English or Arabic",
+          "type": "string",
+          "default": ""
+        },
+        "state": {
+          "description": "The state or province in which the city resides",
+          "type": "string",
+          "default": ""
+        },
+        "country": {
+          "description": "The country in which the city resides",
+          "type": "string",
+          "default": ""
+        }
+      },
+      "required": [
+        "city"
+      ]
+    }
+  },
+  "messages": [
+    {
+      "type": "request-start",
+      "content": "ثواني بس أشوف لك",
+      "blocking": false
+    },
+    {
+      "type": "request-response-delayed",
+      "content": "خليك معي من فضلك",
+      "timingMilliseconds": 1500
+    },
+    {
+      "type": "request-failed",
+      "content": "أعتذر على الإطالة، بس ما قدرت أوصل لخدمة الطقس",
+      "endCallAfterSpokenEnabled": false
+    }
+  ],
+  "orgId": "dc4f6480-4fe7-474d-96c9-74badd1b15a4",
+  "server": {
+    "url": "https://brandi-unscrutinized-biannually.ngrok-free.dev/api/weather",
+    "timeoutSeconds": 20,
+    "staticIpAddressesEnabled": false
+  },
+  "async": false,
+  "variableExtractionPlan": {
+    "schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+}
