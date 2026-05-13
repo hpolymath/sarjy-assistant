@@ -1,7 +1,7 @@
 {
   "id": "1c466956-6f95-49d5-af6d-bfdb15e7800a",
   "createdAt": "2026-05-12T09:32:21.212Z",
-  "updatedAt": "2026-05-12T11:19:52.300Z",
+  "updatedAt": "2026-05-13T09:11:47.054Z",
   "type": "function",
   "function": {
     "name": "plan_route",
@@ -46,7 +46,7 @@
   ],
   "orgId": "dc4f6480-4fe7-474d-96c9-74badd1b15a4",
   "server": {
-    "url": "https://brandi-unscrutinized-biannually.ngrok-free.dev/api/maps",
+    "url": "https://sarjy-assistant.vercel.app/api/maps",
     "timeoutSeconds": 40,
     "staticIpAddressesEnabled": false
   },

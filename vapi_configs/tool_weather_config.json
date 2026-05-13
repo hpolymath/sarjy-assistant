@@ -1,7 +1,7 @@
 {
   "id": "cb80b2ff-15e3-474c-bd47-7c2d52804da4",
   "createdAt": "2026-05-08T22:53:56.286Z",
-  "updatedAt": "2026-05-12T11:24:22.005Z",
+  "updatedAt": "2026-05-13T09:13:45.310Z",
   "type": "function",
   "function": {
     "name": "get_weather",
@@ -49,7 +49,7 @@
   ],
   "orgId": "dc4f6480-4fe7-474d-96c9-74badd1b15a4",
   "server": {
-    "url": "https://brandi-unscrutinized-biannually.ngrok-free.dev/api/weather",
+    "url": "https://sarjy-assistant.vercel.app/api/weather",
     "timeoutSeconds": 20,
     "staticIpAddressesEnabled": false
   },
