@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 
 /**
  * Estimates a maximum search radius in meters based on travel mode and time constraints.
- * Uses highly optimistic baseline speeds to ensure a wide net is cast during the initial 
- * Places search. The Routes API handles precise, traffic-aware filtering later in the pipeline.
  */
 function calculateSearchRadius(mode: string, timeLimitMinutes: number): number {
   const estimatedSpeeds: Record<string, number> = {
@@ -15,24 +13,45 @@ function calculateSearchRadius(mode: string, timeLimitMinutes: number): number {
   const speedMetersPerMinute = estimatedSpeeds[mode] || estimatedSpeeds['DRIVE'];
   const radiusMeters = speedMetersPerMinute * timeLimitMinutes;
 
-  // Restrict to Google Places API maximum allowed radius (50km)
   return Math.min(radiusMeters, 50000); 
 }
 
 export async function POST(req: Request) {
+  let toolCallId = null;
+
   try {
-    const { query, origin, travelMode = 'DRIVE', maxTimeMinutes } = await req.json();
+    const body = await req.json();
+
+    // 1. Payload Parsing (Supports Vapi Webhook & Local Fallback)
+    let args = body;
+    
+    if (body.message?.toolCalls?.[0]) {
+      const toolCall = body.message.toolCalls[0];
+      toolCallId = toolCall.id;
+      args = toolCall.function?.arguments || {};
+      
+      if (typeof args === 'string') {
+        args = JSON.parse(args);
+      }
+    }
+
+    const { query, origin, travelMode = 'DRIVE', maxTimeMinutes } = args;
 
     if (!query || !origin) {
-      return NextResponse.json({ 
+      const errorPayload = { 
         status: "error", 
         message: "Both 'query' and 'origin' parameters are required." 
-      }, { status: 400 });
+      };
+      
+      if (toolCallId) {
+        return NextResponse.json({ results: [{ toolCallId, result: errorPayload }] });
+      }
+      return NextResponse.json(errorPayload, { status: 400 });
     }
 
     const apiKey = process.env.GOOGLE_MAPS_API_KEY as string;
 
-    // 1. Geocode the origin address into coordinates
+    // 2. Geocoding
     const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(origin)}&key=${apiKey}`;
     const geocodeRes = await fetch(geocodeUrl);
     const geocodeData = await geocodeRes.json();
@@ -42,7 +61,7 @@ export async function POST(req: Request) {
       location = geocodeData.results[0].geometry.location; 
     }
 
-    // 2. Discover locations via Places API
+    // 3. Discovery (Places API)
     const searchRadius = maxTimeMinutes 
       ? calculateSearchRadius(travelMode, maxTimeMinutes) 
       : 5000;
@@ -68,21 +87,23 @@ export async function POST(req: Request) {
     });
 
     const placesData = await placesRes.json();
-    
-    // Request up to 10 candidates to account for potential drop-offs during routing validation
     const candidates = placesData.places?.slice(0, 10) || [];
 
     if (candidates.length === 0) {
-      return NextResponse.json({ 
+      const noResultsPayload = { 
         status: "success", 
         message: `No locations found for '${query}' near '${origin}'. Please suggest an alternative.` 
-      });
+      };
+
+      if (toolCallId) {
+        return NextResponse.json({ results: [{ toolCallId, result: noResultsPayload }] });
+      }
+      return NextResponse.json(noResultsPayload);
     }
 
-    // 3. Validate travel times concurrently via Routes API
+    // 4. Routing Validation (Routes API)
     const results = await Promise.all(candidates.map(async (place: any) => {
       try {
-        // Offset current time by 10 seconds to prevent clock-skew rejection from Google's servers
         const futureDepartureTime = new Date(Date.now() + 10000).toISOString();
 
         const routingBody: any = {
@@ -131,7 +152,6 @@ export async function POST(req: Request) {
             isWithinConstraint = durationMinutes <= maxTimeMinutes;
           }
         } else {
-          // Retain location if mapping fails, but flag as unconstrained for downstream handling
           isWithinConstraint = true;
         }
 
@@ -153,20 +173,18 @@ export async function POST(req: Request) {
       }
     }));
 
-    // 4. Format and return final dataset
+    // 5. Formatting & Filtering
     const validOptions = results.filter(r => r.isWithinConstraint);
 
-    // Prioritize locations with the shortest travel time
     validOptions.sort((a, b) => {
       const timeA = typeof a.travelTimeMinutes === 'number' ? a.travelTimeMinutes : 999;
       const timeB = typeof b.travelTimeMinutes === 'number' ? b.travelTimeMinutes : 999;
       return timeA - timeB;
     });
     
-    // Limit payload to top 3 results to optimize LLM context window limits
     const finalOptions = validOptions.slice(0, 3).map(({ isWithinConstraint, ...rest }) => rest);
     
-    return NextResponse.json({
+    const finalPayload = {
       status: "success",
       context: {
         origin_used: origin,
@@ -175,13 +193,32 @@ export async function POST(req: Request) {
         time_limit_applied: maxTimeMinutes ? `${maxTimeMinutes} mins` : "None"
       },
       options: finalOptions.length > 0 ? finalOptions : "The identified locations exceed the specified time limit. Modify the search parameters to try again."
-    });
+    };
+
+    // 6. Final Vapi / Fallback Return
+    if (toolCallId) {
+      return NextResponse.json({
+        results: [{
+          toolCallId: toolCallId,
+          result: finalPayload
+        }]
+      });
+    }
+
+    return NextResponse.json(finalPayload);
 
   } catch (error) {
     console.error("Maps Integration Error:", error);
-    return NextResponse.json({ 
+    
+    const serverErrorPayload = { 
       status: "error", 
       message: "The evening planner service encountered an internal issue." 
-    }, { status: 500 });
+    };
+
+    if (toolCallId) {
+      return NextResponse.json({ results: [{ toolCallId, result: serverErrorPayload }] });
+    }
+    
+    return NextResponse.json(serverErrorPayload, { status: 500 });
   }
 }

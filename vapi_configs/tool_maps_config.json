@@ -1,0 +1,61 @@
+{
+  "id": "1c466956-6f95-49d5-af6d-bfdb15e7800a",
+  "createdAt": "2026-05-12T09:32:21.212Z",
+  "updatedAt": "2026-05-12T11:19:52.300Z",
+  "type": "function",
+  "function": {
+    "name": "plan_route",
+    "description": "Finds places based on user preferences and calculates actual travel time. Use this to suggest locations and build itineraries. IMPORTANT: For the first stop, the origin is the user's current city/location. For multi-stop plans, the origin MUST be the exact address of the PREVIOUS stop to calculate accurate sequential travel times.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "description": "The type of place, vibe, or semantic search term (e.g., 'quiet specialty coffee', 'sushi restaurant', 'luxury mall').",
+          "type": "string"
+        },
+        "origin": {
+          "description": "The full address of the starting point. This is REQUIRED. If this is step 2 of an itinerary, pass the address of step 1 here.",
+          "type": "string"
+        },
+        "travelMode": {
+          "description": "The user's preferred mode of transportation. Defaults to DRIVE if not specified.",
+          "type": "string",
+          "enum": [
+            "DRIVE",
+            "WALK",
+            "TRANSIT"
+          ]
+        },
+        "maxTimeMinutes": {
+          "description": "The maximum travel time in minutes the user is willing to spend. Leave blank if the user doesn't specify a time limit.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "query",
+        "origin"
+      ]
+    }
+  },
+  "messages": [
+    {
+      "type": "request-start",
+      "content": "لحظة، خليني أشيك لك الخريطة...",
+      "blocking": false
+    }
+  ],
+  "orgId": "dc4f6480-4fe7-474d-96c9-74badd1b15a4",
+  "server": {
+    "url": "https://brandi-unscrutinized-biannually.ngrok-free.dev/api/maps",
+    "timeoutSeconds": 40,
+    "staticIpAddressesEnabled": false
+  },
+  "async": false,
+  "variableExtractionPlan": {
+    "schema": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+}
