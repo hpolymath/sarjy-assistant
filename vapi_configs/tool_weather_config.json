@@ -1,11 +1,11 @@
 {
   "id": "cb80b2ff-15e3-474c-bd47-7c2d52804da4",
   "createdAt": "2026-05-08T22:53:56.286Z",
-  "updatedAt": "2026-05-09T07:11:20.263Z",
+  "updatedAt": "2026-05-12T11:24:22.005Z",
   "type": "function",
   "function": {
     "name": "get_weather",
-    "description": "Fetches the current weather for a specific city.",
+    "description": "Retrieves real-time weather conditions for a specified location. Use this to check conditions before suggesting outdoor activities. IMPORTANT: Always translate Arabic phonetic city names into proper English spelling before calling this tool. If the location is ambiguous, ask the user for clarification. Country parameters MUST be formatted as strict 2-letter ISO 3166 alpha-2 codes.",
     "parameters": {
       "type": "object",
       "properties": {
