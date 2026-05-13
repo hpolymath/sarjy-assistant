@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sarjy: A Bilingual Voice-Controlled Assistant
 
-## Getting Started
+Sarjy is a helpful, voice-controlled assistant designed to provide a natural, low-latency conversational experience. Built as an engineering assessment task, the project focuses on robust voice-to-voice interaction, bilingual support, and integration with real-time location and environmental data.
 
-First, run the development server:
+## 🚀 Live Demo
+**Link:** [https://sarjy-assistant.vercel.app/](https://sarjy-assistant.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Key Features
+* **Bilingual Voice Interaction**: Configured to listen and respond in Arabic (Saudi Arabia) and English using a high-fidelity transcription and synthesis pipeline [cite: 25-26].
+* **Conversational Memory**: Sarjy retains context during conversations, allowing for natural follow-up questions (e.g., "What's my favorite color?") [cite: 9-11].
+* **Real-time Data Integration**: Seamlessly connected to external APIs to provide weather, routing, and location-based information.
+* **Robust Orchestration**: Utilizes Vapi for real-time WebRTC audio streaming to balance low latency with high interaction fidelity.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Technical Architecture
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### The Voice Pipeline
+To ensure robustness and quality, the assistant uses a specialized "Model Cluster" approach:
+* **Orchestrator**: [Vapi](https://vapi.ai) for sub-second WebRTC streaming.
+* **Transcriber (STT)**: Azure (flux general en) optimized for Saudi Arabic.
+* **Intelligence (LLM)**: OpenAI GPT-o4 Mini Cluster for fast, accurate response generation.
+* **Voice (TTS)**: ElevenLabs (Eleven Multilingual v2) for realistic, human-like speech.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### API Integrations
+* **OpenWeatherMap**: For real-time environmental updates.
+* **Google Routes & Geocoding**: For location-aware logic and pathfinding.
+* **Places API (New)**: For identifying and describing points of interest.
 
-## Learn More
+### Configuration Management
+Detailed assistant and tool configurations are stored in the `/vapi_configs/` subdirectory, for clean separation between the logic layer and the frontend interface.
 
-To learn more about Next.js, take a look at the following resources:
+## 🏗️ Architectural Decisions
+Issues to Explored:
+* **Latency vs. Robustness**: While WebRTC provides the baseline for low latency, This project prioritised the **robustness** of the bilingual model cluster to ensure accurate understanding in diverse conversational contexts.
+* **System Design**: Used Next.js (App Router) for the web interface to ensure the project is easily accessible and deployable.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Installation & Setup
+1. Clone the repository: `git clone https://github.com/hpolymath/sarjy-assistant`
+2. Install dependencies: `npm install`
+3. Configure Environment Variables: Refer to `.env.example` for required keys (Vapi Public Key, etc.).
+4. Run locally: `npm run dev`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔮 Future Work
+* **Advanced Latency Optimization**: Implementing edge-deployed caching and provider-specific tuning.
+* **Calendar Integration**: Connecting with Google/Outlook calendars via custom MCPs.
+* **Custom Tooling**: Expanding the model's capabilities to handle extra workflows like note-taking and event planning and scheduling.
