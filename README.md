@@ -6,8 +6,8 @@ Sarjy is a helpful, voice-controlled assistant designed to provide a natural, lo
 **Link:** [https://sarjy-assistant.vercel.app/](https://sarjy-assistant.vercel.app/)
 
 ## ✨ Key Features
-* **Bilingual Voice Interaction**: Configured to listen and respond in Arabic (Saudi Arabia) and English using a high-fidelity transcription and synthesis pipeline [cite: 25-26].
-* **Conversational Memory**: Sarjy retains context during conversations, allowing for natural follow-up questions (e.g., "What's my favorite color?") [cite: 9-11].
+* **Bilingual Voice Interaction**: Configured to listen and respond in Arabic (Saudi Arabia) and English using a high-fidelity transcription and synthesis pipeline.
+* **Conversational Memory**: Sarjy retains context during conversations, allowing for natural follow-up questions (e.g., "What's my favorite color?").
 * **Real-time Data Integration**: Seamlessly connected to external APIs to provide weather, routing, and location-based information.
 * **Robust Orchestration**: Utilizes Vapi for real-time WebRTC audio streaming to balance low latency with high interaction fidelity.
 
